@@ -35,12 +35,14 @@ app.post("/compress-video", (req, res) => {
         //Create a new child process
         const child = fork("video.js");
         //Send message to child process
-        child.send(tempFilePath);
+        child.send({ tempFilePath, name: video.name });
         //Listen for message from child process
         child.on("message", (message)=> {
-            console.log("🚀 ~ file: server.js ~ line 37 ~ child.on ~ message", 
-            message);
-            res.send("Success");
+            // console.log("🚀 ~ file: server.js ~ line 37 ~ child.on ~ message", 
+            // message);
+            const {statusCode, text} = message;
+            //res.send("Success");
+            res.status(statusCode).send(text);
         });
     } else {
         res.status(400).send("No file uploaded");
